@@ -23,10 +23,10 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public boolean createCustomer(SignupRequest signupRequest) {
+    public Customer createCustomer(SignupRequest signupRequest) {
         //Check if customer already exist
         if (customerRepository.existsByEmail(signupRequest.getEmail())) {
-            return false;
+            return null;
         }
 
         Customer customer = new Customer();
@@ -35,7 +35,8 @@ public class AuthServiceImpl implements AuthService {
         //Hash the password before saving
         String hashPassword = passwordEncoder.encode(signupRequest.getPassword());
         customer.setPassword(hashPassword);
-        customerRepository.save(customer);
-        return true;
+        Customer createdCustomer = customerRepository.save(customer);
+        customer.setId(createdCustomer.getId());
+        return customer;
     }
 }
